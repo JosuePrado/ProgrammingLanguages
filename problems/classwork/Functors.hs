@@ -1,12 +1,26 @@
 module Functors where
 
+    import Control.Applicative
+
     data MyList a = Empty
         | Cons a (MyList a)
         deriving (Show, Eq, Ord)
+
     instance Functor MyList where 
         fmap:: (a -> b) -> MyList a -> MyList b
         fmap _ Empty = Empty
         fmap f (Cons a xs) = Cons (f a) (fmap f xs)
+
+    instance Applicative MyList where 
+        pure :: a -> MyList a 
+        pure a = Cons a Empty
+
+        (<*>) :: MyList (a -> b) -> MyList a -> MyList b
+        (<*>) _ Empty = Empty
+
+    ex = [(+), (-)] <*> [1,2] <*> [3,4]
+        
+
 
     data TrafficLight = Red | Yellow | Green
 
@@ -28,4 +42,22 @@ module Functors where
         fmap _ CNothing = CNothing
         fmap f (CJust x y) = CJust (x + 1) (f y)
 
-    
+    x = fmap (++ "haaa") (CJust 0 "ho")
+    y = fmap (++ "haaa") (CJust 1 "ho")
+
+    data BinaryTree a = BEmpty
+                    | Node a (BinaryTree a) (BinaryTree a)
+                    deriving (Show)
+
+    instance Functor BinaryTree where 
+        fmap :: (a -> b) -> BinaryTree a -> BinaryTree b
+        fmap _ BEmpty = BEmpty
+        fmap f (Node n left right) = Node (f n) (fmap f left) (fmap f right)
+
+    instance Applicative BinaryTree where
+        pure x = Node x BEmpty BEmpty
+        BEmpty <*> _ = BEmpty
+        _ <*> BEmpty = BEmpty
+        (Node f leftF rightF) <*> (Node x leftX rightX) = Node (f x) (leftF <*> leftX) (rightF <*> rightX)    
+
+
