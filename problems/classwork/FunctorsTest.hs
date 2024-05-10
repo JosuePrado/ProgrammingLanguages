@@ -29,12 +29,12 @@ module FunctorsTest where
     stringLength tree = fmap length tree
 
     example2 = Node "a" (Node "bc" Empty Empty) (Node "efg" Empty Empty)
-
-    mergeTrees :: Ord a => BinaryTree a -> BinaryTree a -> BinaryTree a
-    mergeTrees tree1 Empty = tree1
-    mergeTrees Empty tree2 = tree2
-    mergeTrees tree1 (Node y leftY rightY) = mergeTrees (insert y tree1) (mergeTrees leftY (mergeTrees rightY tree1))
     
+    mergueTrees :: (Ord a) => BinaryTree a -> BinaryTree a -> BinaryTree a
+    mergueTrees Empty treeB = treeB
+    mergueTrees treeA Empty = treeA 
+    mergueTrees (Node a left right) treeB = mergueTrees right (mergueTrees left (insert a treeB))
+
     insert :: (Ord a) => a -> BinaryTree a -> BinaryTree a
     insert x Empty = Node x Empty Empty
     insert x (Node a left right)
@@ -42,5 +42,9 @@ module FunctorsTest where
         | x < a  = Node a (insert x left) right
         | x > a  = Node a left (insert x right)
 
-    tree1 = Node 1 (Node 2 Empty Empty) (Node 3 Empty Empty)
-    tree2 = Node 4 (Node 5 Empty Empty) (Node 6 Empty Empty)
+    merguetrees2 :: (a -> a -> b) -> BinaryTree a -> BinaryTree a -> BinaryTree b
+    merguetrees2 _ Empty Empty = Empty
+    merguetrees2 f (Node x leftX rightX) (Node y leftY rightY) = Node (f x y) (merguetrees2 f leftX leftY) (merguetrees2 f rightX rightY)
+
+    tree1 = Node 1 (Node 2 (Node 4 Empty Empty) Empty) (Node 3 Empty Empty)
+    tree2 = Node 4 (Node 5 (Node 6 Empty Empty) Empty) (Node 6 Empty Empty)

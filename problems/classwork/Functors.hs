@@ -1,7 +1,7 @@
 module Functors where
 
     import Control.Applicative
-
+    
     data MyList a = Empty
         | Cons a (MyList a)
         deriving (Show, Eq, Ord)
@@ -55,9 +55,26 @@ module Functors where
         fmap f (Node n left right) = Node (f n) (fmap f left) (fmap f right)
 
     instance Applicative BinaryTree where
+        pure :: a -> BinaryTree a
         pure x = Node x BEmpty BEmpty
+        (<*>) :: BinaryTree (a -> b) -> BinaryTree a -> BinaryTree b
         BEmpty <*> _ = BEmpty
         _ <*> BEmpty = BEmpty
         (Node f leftF rightF) <*> (Node x leftX rightX) = Node (f x) (leftF <*> leftX) (rightF <*> rightX)    
 
 
+    addMaybes :: Maybe Int -> Maybe Int -> Maybe Int 
+    addMaybes mx my = (+) <$> mx <*> my
+
+    -- Alternative Functors <|>
+
+    instance Alternative MyList where 
+        empty :: MyList a
+        empty = Empty 
+        (<|>) :: MyList a -> MyList a -> MyList a
+        Empty <|> xs = xs
+        xs <|> Empty = xs 
+        (Cons x xs) <|> ys = Cons x (xs <|> ys)
+
+    example :: Maybe Int 
+    example = Just 1 <|> Just 2
