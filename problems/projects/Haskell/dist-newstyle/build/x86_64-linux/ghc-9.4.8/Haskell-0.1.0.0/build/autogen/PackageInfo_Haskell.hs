@@ -22,4 +22,4 @@ synopsis = ""
 copyright :: String
 copyright = "2024 Author name here"
 homepage :: String
-homepage = "https://github.com/githubuser/Haskell#readme"
+homepage = ""
